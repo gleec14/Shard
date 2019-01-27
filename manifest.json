@@ -1,0 +1,19 @@
+{
+  "name": "Shard",
+  "description": "An app that groups browser tabs together and allows you to load them whenever you like",
+  "version": "0.1",
+  "version_name": "alpha 0.1",
+
+  "author": "Gregory Lee",
+
+  "permissions": ["bookmarks", "tabs"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistant": false
+  },
+  "browser_action": {
+    "default_title": "Shard",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}
