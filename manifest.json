@@ -6,7 +6,7 @@
 
   "author": "Gregory Lee",
 
-  "permissions": ["bookmarks", "tabs"],
+  "permissions": ["activeTab", "bookmarks"],
   "background": {
     "scripts": ["background.js"],
     "persistant": false
