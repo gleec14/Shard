@@ -14,33 +14,55 @@ function loadGem() {
 }
 
 // Display all Bookmark folders
-function displayGems() {
-  alert("displayGems")
-}
+//function displayGems() {
+//  alert("displayGems")
+//}
 
 // Removes selected Gems
 function removeGems() {
   alert("removeGems")
 }
 
-// Creates Gem card
-function createCard() {
-  let card =
-    `<div class="card">
-      <h4> Gem </h4>
-    </div>`;
-  let cards = '';
-  let amount = 5;
-  for(let i = 0; i < amount; i++){
-    cards += card;
-  }
-  $(".gems").empty().append(cards);
+// Traverse the bookmark tree, and print folders
+function displayGems(){
+  var bookmarkNodes = chrome.bookmarks.getTree(
+    function(bookmarkNodes) {
+      $('.gems').append(createPanels(bookmarkNodes));
+    });
 }
 
-//document.addEventListener('DOMContentLoaded')
+//Creates panels from which folder names are displayed
+function createPanels(bookmarkNodes) {
+  var panels = '';
+  var bookmarks;
+  var i;
+  for (i = 0; i < bookmarkNodes.length; i++) {
+    var folders = getFolders(bookmarkNodes[i]);
+    for (var j = 0; j < folders.length; j++) {
+      var panel = '<div class="gem"><h4>'
+                   + folders[j].title
+                    + '</h4></div>';
+      panels += panel;
+    }
+  }
+  bglog(panels);
+  return panels;
+}
+
+function getFolders(bookmarkNode) {
+  bglog(bookmarkNode.children[1].children);
+  // gets the bookmarks in "Other bookmarks"
+  return bookmarkNode.children[1].children;
+}
+
+// console.log in the background page
+var bglog = function(obj) {
+	if(chrome && chrome.runtime) {
+		chrome.runtime.sendMessage({type: "bglog", obj: obj});
+	}
+}
+
+$(document).ready(displayGems);
 //Add listeners to buttons
-$("addNewGem").click(addNewGem);
-$("loadGem").click(loadGem);
-$(document).ready(createCard)
-//document.getElementById("displayGems").addEventListener("click", displayGems);
-//document.getElementById("removeGems").addEventListener("click", removeGems);
+$("#addNewGem").click(addNewGem);
+$("#loadGem").click(loadGem);
