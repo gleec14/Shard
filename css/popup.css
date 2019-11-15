@@ -21,6 +21,10 @@ body {
   color: #CA1FFF;#FDF3F3;
 }
 
+#gemname {
+  float: left;
+}
+
 .gems {
   display: flex;
   flex-direction: column;

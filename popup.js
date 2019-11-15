@@ -3,6 +3,11 @@
 // Contains listeners for interactive content in popup.html
 "use strict";
 
+var DEFAULT_GEM_NAMES = ['Ruby', 'Sapphire', 'Emerald',
+'Topaz', 'Opal', 'Aquamarine', 'Pearl', 'Peridot', 'Amethyst',
+'Alexandrite', 'Turquoise'];
+var PLACEHOLDER = 'Name of Gem'
+
 // Adds all tabs in the current window to a new Bookmarks folder
 function addNewGem() {
   // Stores urls and website names
@@ -15,15 +20,27 @@ function addNewGem() {
       urls.push(tabs[i].url);
       titles.push(tabs[i].title);
     }
-    // Create a new bookmark folder and place tabs inside
-    chrome.bookmarks.create({title:'Test'}, function(newFolder){
-      for (var i = 0; i < urls.length; i++){
-        chrome.bookmarks.create({parentId: newFolder.id,
-                                title: titles[i],
-                                url:urls[i]});
-      }
-    });
   });
+  // Decide gem_name
+  var gem_name = $('#gemname').val();
+  bglog('input: ' + gem_name);
+  // Better sanitizers?
+  if (gem_name == '' || gem_name == PLACEHOLDER) {
+    bglog("Assigning gemstone name");
+    gem_name = DEFAULT_GEM_NAMES[Math.floor(Math.random()*DEFAULT_GEM_NAMES.length)];
+  }
+  bglog('gem name: ' + gem_name);
+  var folder;
+  // Create a new bookmark folder and place tabs inside
+  chrome.bookmarks.create({title:gem_name}, function(newFolder){
+    folder = newFolder;
+  });
+  // run outside of callback so that cards update correctly.
+  for (var i = 0; i < urls.length; i++){
+    chrome.bookmarks.create({parentId: folder.id,
+                            title: titles[i],
+                            url:urls[i]});
+  }
   // Reload popup to show changes
   addPanel();
 }
@@ -62,12 +79,14 @@ function addPanelOnClickListener(folders, id) {
      gem_num = parseInt(gem_num);
      // Get urls associated with the gem
      var bookmarks = folders[gem_num].children;
-     var urls = [];
-     for (var k = 0; k < bookmarks.length; k++) {
-       urls.push(bookmarks[k].url);
-     }
      // Open urls in a new window
-     chrome.windows.create({'url': urls}, function(windows){});
+     chrome.windows.create(function(windows){
+       for (var k = 0; k < bookmarks.length; k++) {
+         chrome.tabs.create({'windowId':windows.id, 'url':bookmarks[k].url, 'active':false});
+       }
+      chrome.tabs.remove(windows.tabs[0].id);
+      chrome.tabs.update(windows.tabs[0].id, {'active':true});
+     });
   });
 }
 
@@ -116,6 +135,7 @@ function createPanels(bookmarkNodes) {
 function getFolders(bookmarkNode) {
   // gets the folders in "Other bookmarks"
   var folders = bookmarkNode.children[1].children;
+  bglog(folders);
   return folders;
 }
 
@@ -128,6 +148,6 @@ var bglog = function(obj) {
 
 $(document).ready(function() {
   displayGems();
+  //Add listeners to buttons
+  $("#addNewGem").click(addNewGem);
 });
-//Add listeners to buttons
-$("#addNewGem").click(addNewGem);
