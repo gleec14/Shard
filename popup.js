@@ -10,39 +10,26 @@ var PLACEHOLDER = 'Name of Gem'
 
 // Adds all tabs in the current window to a new Bookmarks folder
 function addNewGem() {
-  // Stores urls and website names
-  var urls = [];
-  var titles = [];
   // Get tabs in current window
   chrome.tabs.query({currentWindow:true}, function(tabs){
-    // Store the urls and website names of each tab
-    for (var i = 0; i < tabs.length; i++){
-      urls.push(tabs[i].url);
-      titles.push(tabs[i].title);
+    // Decide gem_name
+    var gem_name = $('#gemname').val();
+    // Better sanitizers?
+    if (gem_name == '' || gem_name == PLACEHOLDER) {
+      gem_name = DEFAULT_GEM_NAMES[Math.floor(Math.random()*DEFAULT_GEM_NAMES.length)];
     }
+    bglog('gem name: ' + gem_name);
+    // Create a new bookmark folder and place tabs inside
+    chrome.bookmarks.create({title:gem_name}, function(newFolder){
+      for (var i = 0; i < tabs.length; i++){
+        chrome.bookmarks.create({parentId: newFolder.id,
+                                title: tabs[i].title,
+                                url: tabs[i].url});
+      }
+      // Reload popup to show changes
+      addPanel();
+    });
   });
-  // Decide gem_name
-  var gem_name = $('#gemname').val();
-  bglog('input: ' + gem_name);
-  // Better sanitizers?
-  if (gem_name == '' || gem_name == PLACEHOLDER) {
-    bglog("Assigning gemstone name");
-    gem_name = DEFAULT_GEM_NAMES[Math.floor(Math.random()*DEFAULT_GEM_NAMES.length)];
-  }
-  bglog('gem name: ' + gem_name);
-  var folder;
-  // Create a new bookmark folder and place tabs inside
-  chrome.bookmarks.create({title:gem_name}, function(newFolder){
-    folder = newFolder;
-  });
-  // run outside of callback so that cards update correctly.
-  for (var i = 0; i < urls.length; i++){
-    chrome.bookmarks.create({parentId: folder.id,
-                            title: titles[i],
-                            url:urls[i]});
-  }
-  // Reload popup to show changes
-  addPanel();
 }
 
 // Loads all tabs in a chosen Bookmarks folder in a new window
@@ -148,6 +135,6 @@ var bglog = function(obj) {
 
 $(document).ready(function() {
   displayGems();
-  //Add listeners to buttons
-  $("#addNewGem").click(addNewGem);
 });
+//Add listeners to buttons
+$("#addNewGem").click(addNewGem);
