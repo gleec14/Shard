@@ -29,11 +29,11 @@ Shard can currently:
 
 In the future, users should be able to:
 
-* modify folder names from within the extension.
 * view and modify folder contents.
 * add new tabs to an existing folder.
-* delete folders (w/o going into the bookmark manager).
-* use macros to load or save without clicking the extension.
+* use macros to load or save without clicking the extension. \
+:white_check_mark: modify folder names from within the extension. \
+:white_check_mark: delete folders (w/o going into the bookmark manager).
 
 ## Why the name?
 Shard can gather all open tabs (shards) in the current window and place them in a folder that you name (gem).

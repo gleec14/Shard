@@ -1,6 +1,6 @@
 body {
   background-color: #f0f0f0;#F8E7E7;
-  width: 200px;
+  width: 260px;
   font-family: Verdana,sans-serif;
   line-height: 1.5;
 }
@@ -23,6 +23,7 @@ body {
 
 #gemname {
   float: left;
+  padding: 5px;
 }
 
 .gems {
@@ -43,7 +44,7 @@ body {
   height: 35px;
   padding-top: 2px;
   padding-bottom: 2px;
-  margin-top: 2px;
+  margin-top: 3px;
   margin-bottom: 2px;
   transition-duration: 0.5s;
   float: left;
@@ -71,17 +72,18 @@ body {
   align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
+  margin-top: 5px;
 }
 
 button {
   width: 80px;
-  height: 30px;
-  margin: 5px;
+  height: 40px;
+  margin: 5px 3px 5px 1px;
   font-size: 1em;
   float: left;
 }
 
 button:hover {
-  background: #7c5fab;
+  border-color: #CA1FFF;
   transition: all 0.5s ease;
 }
