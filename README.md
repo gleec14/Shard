@@ -11,8 +11,9 @@ Shard can be used to:
 
 ## Installation
 1) Clone this repo.
-2) Go to chrome://extensions/ and click "Load unpacked".
-3) Select the path to the repo.
+2) Go to chrome://extensions/ and turn on "Developer mode."
+3) Click "Load unpacked".
+4) Select the path to the repo.
 
 ## Usage
 1) Click on the window with the tabs you want to store.
