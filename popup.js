@@ -45,6 +45,12 @@ function addNewGem(gem_name) {
 // Loads on gem on click (might generalize later)
 function addPanelOnClickListener(folders, id) {
   var gem = '#gem' + id;
+  // Load gem after releasing the enter key
+  $('.gems').on('keyup', gem, function(event){
+      if (event.keyCode == 13) {
+        $(this).click();
+      }
+  });
   $('.gems').on('click', gem, function(event){
      // Get the event string
      var gem_num = event.handleObj.selector;
@@ -79,7 +85,7 @@ function addPanelOnClickListener(folders, id) {
 function addPanel() {
   getFolders().then(folders => {
     var id = folders.length - 1;
-    var panel = '<div class="gem" id="gem' + id + '"><h4>'
+    var panel = '<div tabindex="0" class="gem" id="gem' + id + '"><h4>'
                  + folders[id].title
                   + '</h4></div>';
     $('.gems').append(panel);
@@ -111,7 +117,7 @@ function displayGems(){
 function createPanels(folders) {
   // Create a panel for every folder
   for (var j = 0; j < folders.length; j++) {
-    var panel = '<div class="gem" id="gem' + j + '"><h4>'
+    var panel = '<div tabindex="0" class="gem" id="gem' + j + '"><h4>'
                  + folders[j].title
                   + '</h4></div>';
     $('.gems').append(panel);
@@ -132,25 +138,43 @@ $(document).ready(function() {
 
 //Add listeners to buttons
 $("#addNewGem").click(addNewGemHandler);
+
+$("#renameGem").keyup(function(){
+    if (event.keyCode == 13) {
+      (this).click();
+    }
+  });
 $("#renameGem").click(function(){
     // Toggle mode and button highlight
     if(MODE == RENAME_MODE) {
       MODE = CREATE_MODE;
       $("#renameGem").css("border-color", "#f0f0f0");
+      $("#renameGem").attr("aria-pressed", "false");
     } else {
       MODE = RENAME_MODE;
       $("#renameGem").css("border-color", "#CA1FFF");
+      $("#renameGem").attr("aria-pressed", "true");
+      $("#deleteGems").attr("aria-pressed", "false");
       $("#deleteGems").css("border-color", "#f0f0f0");
     }
   });
+
+$("#deleteGems").keyup(function(){
+    if (event.keyCode == 13) {
+      (this).click();
+    }
+  });
 $("#deleteGems").click(function(){
-      // Toggle mode and button highlight
-      if(MODE == DELETE_MODE) {
-        MODE = CREATE_MODE;
-        $("#deleteGems").css("border-color", "#f0f0f0");
-      } else {
-        MODE = DELETE_MODE;
-        $("#deleteGems").css("border-color", "#CA1FFF");
-        $("#renameGem").css("border-color", "#f0f0f0");
-      }
-    });
+    // Toggle mode and button highlight
+    if(MODE == DELETE_MODE) {
+      MODE = CREATE_MODE;
+      $("#deleteGems").css("border-color", "#f0f0f0");
+      $("#deleteGems").attr("aria-pressed", "false");
+    } else {
+      MODE = DELETE_MODE;
+      $("#deleteGems").css("border-color", "#CA1FFF");
+      $("#deleteGems").attr("aria-pressed", "true");
+      $("#renameGem").attr("aria-pressed", "false");
+      $("#renameGem").css("border-color", "#f0f0f0");
+    }
+  });
